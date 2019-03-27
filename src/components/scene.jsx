@@ -5,86 +5,116 @@ class Scene extends React.Component {
   constructor(props) {
     super(props);
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000, -1);
     this.renderer = new THREE.WebGLRenderer();
 
     this.step = 0;
-    this.things = {};
+    this.position = { x: 0, y: 0 };
+    this.cameraParams = { counter0: 0, counter1: 1};
 
     this.webgl = React.createRef();
     
     this.resize = this.resize.bind(this);
     this.renderSence = this.renderSence.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
   }
   componentDidMount() {
     const {scene, camera, renderer, webgl} = this;
-    scene.fog = new THREE.FogExp2(0xffffff, 0.01);
-    scene.overrideMaterial = new THREE.MeshLambertMaterial({
-      color: 0xffffff
-    });
-    // 设置背景颜色
     renderer.setClearColor(0xEEEEEE);
     renderer.shadowMapEnabled = true;
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    const ambientLight = new THREE.AmbientLight(0x0c0c0c);
-    scene.add(ambientLight);
+    // const ambientLight = new THREE.AmbientLight(0x0c0c0c);
+    // scene.add(ambientLight);
 
-    const spotLight = new THREE.SpotLight(0xffffff);
+    // const spotLight = new THREE.SpotLight(0xffffff);
+    // spotLight.position.set(-40, 60, -10);
+    // spotLight.castShadow = true;
+    // scene.add(spotLight);
 
-    spotLight.position.set(-40, 60, -10);
-    spotLight.castShadow = true;
-    scene.add(spotLight);
+    const axis = new THREE.AxisHelper(20);
+    axis.name = 'axis';
+    scene.add(axis);
 
-    this.addPlane();
+    // this.addPlane();
+    // this.addCube();
+    // this.addSphere();
 
-    camera.position.x = -30;
+    camera.position.x = 10;
     camera.position.y = 40;
     camera.position.z = 30;
     camera.lookAt(scene.position);
+
     webgl.current.appendChild(renderer.domElement);
-    this.createFace();
     this.renderSence();
-    window.addEventListener('resize', this.resize);
+
+    // window.addEventListener('resize', this.resize);
+    // const cb = (e) => {
+    //   requestAnimationFrame(() => {
+    //     this.handleMouseMove(e);
+    //   });
+    // };
+    // window.addEventListener('mousedown', (e) => {
+    //   this.position.x = e.pageX;
+    //   this.position.Y = e.pageY;
+    //   window.addEventListener('mousemove', cb);
+    // });
+    // window.addEventListener('mouseup', () => window.removeEventListener('mousemove', cb));
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this.resize);
   }
   resize() {
     const {camera, renderer} = this;
+    // 横纵比例
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   }
   // 添加平面
   addPlane() {
-    const {scene, things} = this;
+    const {scene} = this;
     const planeGeometry = new THREE.PlaneGeometry(60, 40, 1, 1);
     const planeMaterial = new THREE.MeshLambertMaterial({
       color: 0xcccccc
     });
     const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane.name = 'plane';
     plane.rotation.x = - Math.PI / 2;
     plane.position.x = 15;
     plane.position.y = 0;
     plane.position.z = 0;
     plane.receiveShadow = true;
     scene.add(plane);
-    things.plane = plane;
   }
   addCube() {
-    const cubeSize = Math.ceil(Math.random() * 3);
-    const cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+    const {scene} = this;
+    const cubeGeometry = new THREE.BoxGeometry(5, 5, 5);
     const cubeMaterial = new THREE.MeshLambertMaterial({
-      color: Math.random() * 0xffffff
+      color: Math.random() * 0xffffff,
     });
     const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    const helper = new THREE.WireframeHelper(cube, 0xffffff);
+
     cube.castShadow = true;
-    cube.name = 'cube_' + this.scene.children.length;
-    cube.position.x = Math.random() * 30;
-    cube.position.y = Math.random() * 30;
-    cube.position.z = Math.random() * 30;
-    this.scene.add(cube);
+    cube.name = 'cube';
+    cube.position.x = 0;
+    cube.position.y = 4;
+    cube.position.z = 2;
+    scene.add(cube);
+    scene.add(helper)
+  }
+  addSphere() {
+
+    const {scene} = this;
+    const sphereGeometry = new THREE.SphereGeometry(1, 10, 10);
+    const sphereMaterial = new THREE.MeshLambertMaterial({
+      color: 0x7777ff,
+    });
+    const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    sphere.name = 'sphere';
+    sphere.castShadow = true;
+    scene.add(sphere);
   }
   removeCube() {
     const {scene} = this;
@@ -122,9 +152,10 @@ class Scene extends React.Component {
     ];
     const geometry = new THREE.Geometry();
     geometry.vertices = vertices;
+    // geometry.verticesNeedUpdate = true;  如果需要在点变化的时候重新计算面，设置为true
     geometry.faces = faces;
     geometry.computeFaceNormals();
-    const material = new THREE.MeshBasicMaterial({
+    const material = new THREE.MeshLambertMaterial({
       wireframe: true,
       color: 'red'
     });
@@ -133,18 +164,71 @@ class Scene extends React.Component {
     this.scene.add(newFace);
   }
   renderSence() {
-    const {
-      renderer, scene, camera, things: {plane}
-    } = this;
-    const {controls} = this.props;
-    scene.traverse(obj => {
-      if (!(obj instanceof THREE.Mesh) || obj === plane) return;
-      obj.rotation.x += controls.rotationSpeed;
-      obj.rotation.y += controls.rotationSpeed;
-      obj.rotation.z += controls.rotationSpeed;
-    });
+    const { renderer, scene, camera } = this;
+    scene.getObjectByName('cube').rotation.y += 0.005;
     renderer.render(scene, camera);
     requestAnimationFrame(this.renderSence);
+  }
+  handleMouseMove(e) {
+    // const cube = this.scene.getObjectByName('cube');
+    // console.log(e.pageX, e.pageY, this.position)
+      this.changeCamera(this.camera, {
+        x: e.pageX,
+        y: e.pageY
+      }, this.position);
+  }
+  clone(obj) {
+    const {scene} = this;
+    const newGeometry = obj.geometry.clone();
+    const material = [
+      new THREE.MeshLambertMaterial({
+        color: Math.random() * 0xffffff,
+      }),
+      new THREE.MeshBasicMaterial({
+        color: Math.random() * 0xffffff,
+        wireframe: true,
+      })
+    ];
+    const mesh = THREE.SceneUtils.createMultiMaterialObject(newGeometry, material);
+    scene.add(mesh);
+  }
+  changeCamera(obj, pos, prevPos) {
+    let {cameraParams} = this;
+    const {scene, camera, renderer} = this;
+    const x = pos.x - prevPos.x;
+    const y = pos.y - prevPos.y;
+    if (x > 0) {
+      cameraParams.counter0 += .3;
+    } else if (x < 0) {
+      cameraParams.counter0 -= .3;
+    }
+    if (y > 0) {
+      cameraParams.counter1 -= .3;
+    } else if (y < 0) {
+      cameraParams.counter1 += .3;
+    }
+    obj.lookAt(new THREE.Vector3(cameraParams.counter0, cameraParams.counter1, 0))
+    prevPos.x = pos.x;
+    prevPos.y = pos.y;
+    renderer.render(scene, camera);
+  }
+  rotate(obj, pos, prevPos) {
+    const {scene, camera, renderer} = this;
+    const x = pos.x - prevPos.x;
+    const y = pos.y - prevPos.y;
+    if (x > 0) {
+      obj.rotation.y += 0.01;
+    } else if (x < 0) {
+      obj.rotation.y -= 0.01;
+    }
+    if (y > 0 && obj.rotation.x <= Math.PI / 2) {
+      obj.rotation.x += 0.01;
+    } else if (y < 0 && obj.rotation.x >= -Math.PI / 2) {
+      obj.rotation.x -= 0.01;
+    }
+    prevPos.x = pos.x;
+    prevPos.y = pos.y;
+    renderer.render(scene, camera);
   }
   render() {
     const {webgl} = this;
@@ -155,3 +239,13 @@ class Scene extends React.Component {
 };
 
 export default Scene;
+
+
+/**
+ * 获取scene中元素：
+ * const cube = new THREE.Mesh(geometry, material);
+ * cube.name = 'cube';
+ * scene.add(cube);
+ * 
+ * scene.getObjectByName('cube');
+ */

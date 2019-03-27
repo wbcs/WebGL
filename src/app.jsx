@@ -3,8 +3,10 @@ import Stats from 'stats.js';
 import dat from 'dat.gui';
 import './app.css';
 
-import WebGL from './components/webgl';
-import Scene from './components/scene';
+// import WebGL from './components/webgl';
+// import Scene from './components/scene';
+// import VideoTexture from './components/video-texture';
+import Earth from './components/earth';
 
 class App extends React.Component {
   constructor() {
@@ -37,8 +39,10 @@ class App extends React.Component {
         id="stats-ouput"
         style={{position: 'absolute', left: 0, top: 0}}
       />
-      <WebGL controls={controls} updateStats={stats.update.bind(stats)} />
+      {/* <WebGL controls={controls} updateStats={stats.update.bind(stats)} /> */}
       {/* <Scene controls={controls} /> */}
+      {/* <VideoTexture /> */}
+      <Earth />
     </div>
   }
 };

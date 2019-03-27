@@ -10,6 +10,7 @@ const config = {
     rules: [
       { test: /\.(js|jsx)$/, use: ['babel-loader'] },
       { test: /\.css$/, use: ['style-loader', 'css-loader']},
+      { test: /\.(mp4|jpg|png)$/, use: ['file-loader']},
     ],
   },
   plugins: [
