@@ -6,6 +6,7 @@ const config = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'js/[name].[hash].js',
+    publicPath: '/'
   },
   module: {
     rules: [
@@ -18,10 +19,24 @@ const config = {
     new HtmlWebpackPlugin({
       template: './public/index.html', title: 'hehe ~~~',
     }),
-    new CleanWebpackPlugin(),
   ],
   resolve: {
     extensions: ['.js', '.jsx'],
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    }
+  },
+  devServer: {
+    contentBase: "./dist",
+    progress:true,
+    hot: true,
+    port: 8080,
   }
 };
-module.exports = config;
+
+module.exports = (env, argv) => {
+  if (argv.mode === 'development') {
+    config.plugins.push(new CleanWebpackPlugin());
+  }
+  return config;
+};

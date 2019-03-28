@@ -1,14 +1,13 @@
 import React from 'react';
 import * as THREE from 'three';
 
-import earth from  '../assets/earth.jpg';
-import earthBlack from '../assets/earth-black.jpg';
-import earthBump from '../assets/earth-bump.jpg';
-import earthNormal from '../assets/earth-normal.png';
-import earthCloud from '../assets/earth-cloud.png';
-import bgMeteor from '../assets/bg-meteor.png';
+import earth from  '@/assets/earth.jpg';
+import earthBlack from '@/assets/earth-black.jpg';
+import earthBump from '@/assets/earth-bump.jpg';
+import earthNormal from '@/assets/earth-normal.png';
+import earthCloud from '@/assets/earth-cloud.png';
 
-import './earth.css';
+import './index.css';
 
 class Earch extends React.Component {
   constructor(props) {
@@ -101,6 +100,9 @@ class Earch extends React.Component {
     const y = pos.y - prevPos.y;
     const {scene, camera, renderer} = this;
     rotation.y += rad * x;
+    if ((y > 0 && rotation.x <= Math.PI / 2) || (y < 0 && rotation.x >= -Math.PI / 2)) {
+      rotation.x += rad * y;
+    }
     rotation.x += rad * y;
     prevPos.x = pos.x;
     prevPos.y = pos.y;
