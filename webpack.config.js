@@ -1,5 +1,6 @@
 const path = require('path'); 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const config = {
   entry: './src/index.js', // 不写默认也是它 
   output: {
@@ -17,6 +18,7 @@ const config = {
     new HtmlWebpackPlugin({
       template: './public/index.html', title: 'hehe ~~~',
     }),
+    new CleanWebpackPlugin(),
   ],
   resolve: {
     extensions: ['.js', '.jsx'],
