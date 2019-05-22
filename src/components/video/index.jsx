@@ -1,6 +1,6 @@
 import React from 'react';
 import * as THREE from 'three';
-import video from '../assets/dcd.mp4';
+import video from '@/assets/dcd.mp4';
 
 class VideoTexture extends React.Component {
   constructor(props) {

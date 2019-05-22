@@ -1,14 +1,11 @@
-import React from 'react';
-import './app.css';
+import React, { useState} from 'react'
 
-import Light from '@/components/light/index';
-
-class App extends React.Component {
-  render() {
-    return <div id="app">
-      <Light />
-    </div>
+export default function() {
+  const [count, setCount] = useState(0)
+  const handleClick = () => {
+    setCount(count + 1)
   }
-};
-
-export default App;
+  return <div>
+    <button onClick={handleClick}>click me {count}times</button>
+  </div>
+}

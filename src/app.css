@@ -5,3 +5,16 @@ body, html {
   width: 100%;
   box-sizing: border-box;
 }
+
+#app {
+  height: 100%;
+  width: 100%;
+}
+
+/* .loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+} */

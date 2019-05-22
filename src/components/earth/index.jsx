@@ -30,9 +30,8 @@ class Earch extends React.Component {
     const directionalLight = new THREE.DirectionalLight(0xffffff);
     directionalLight.position.set(-1000, 100, 1000);
     directionalLight.intensity = 1;
-
     directionalLight.name = 'directional';
-    scene.add(directionalLight); 
+    scene.add(directionalLight);
 
     const spotLight = new THREE.SpotLight(0xffffff);
     spotLight.position.set(-1000, 100, 1000);
@@ -103,7 +102,6 @@ class Earch extends React.Component {
     if ((y > 0 && rotation.x <= Math.PI / 2) || (y < 0 && rotation.x >= -Math.PI / 2)) {
       rotation.x += rad * y;
     }
-    rotation.x += rad * y;
     prevPos.x = pos.x;
     prevPos.y = pos.y;
     renderer.render(scene, camera);
@@ -128,7 +126,7 @@ class Earch extends React.Component {
       }
     });
     renderer.render(scene, camera);
-    requestAnimationFrame(this.renderScene)
+    requestAnimationFrame(this.renderScene);
   }
   resize = () => {
     const {camera, renderer} = this;

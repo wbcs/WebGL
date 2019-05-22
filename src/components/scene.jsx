@@ -239,13 +239,3 @@ class Scene extends React.Component {
 };
 
 export default Scene;
-
-
-/**
- * 获取scene中元素：
- * const cube = new THREE.Mesh(geometry, material);
- * cube.name = 'cube';
- * scene.add(cube);
- * 
- * scene.getObjectByName('cube');
- */

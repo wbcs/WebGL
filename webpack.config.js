@@ -6,7 +6,6 @@ const config = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'js/[name].[hash].js',
-    publicPath: '/'
   },
   module: {
     rules: [
@@ -28,7 +27,7 @@ const config = {
   },
   devServer: {
     contentBase: "./dist",
-    progress:true,
+    progress: true,
     hot: true,
     port: 8080,
   }
