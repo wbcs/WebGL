@@ -1,11 +1,35 @@
-import React, { useState} from 'react'
+import * as React from 'react'
+import { useState, useEffect } from 'react'
 
-export default function() {
-  const [count, setCount] = useState(0)
-  const handleClick = () => {
-    setCount(count + 1)
-  }
-  return <div>
-    <button onClick={handleClick}>click me {count}times</button>
+const fn = () => console.log('child')
+function Test() {
+  useEffect(() => {
+
+  }, [])
+
+  return <div onClick={fn}>
+    <span>123</span>
   </div>
 }
+
+const test = (e) => {console.log('react')}
+
+function App() {
+  const [counter, setCounter] = useState(0)
+  useEffect(() => {
+    const hehe = document.querySelector('#hehe');
+    hehe.addEventListener('click', () => {
+      setCounter(counter + 1)
+      console.log('native')
+    }, false);
+  }, [])
+  console.log('?')
+  return (
+    <div onClick={test} id="hehe">
+      counter {counter} times!
+      <Test />
+    </div>
+  )
+}
+
+export default App
