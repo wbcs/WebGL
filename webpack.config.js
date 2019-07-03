@@ -2,14 +2,14 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const config = {
-  entry: './src/index.ts', // 不写默认也是它 
+  entry: './src/index.js', // 不写默认也是它 
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'js/[name].[hash].js',
   },
   module: {
     rules: [{
-        test: /\.ts$/,
+        test: /\.(ts|tsx)$/,
         use: ['ts-loader'],
       }, {
         test: /\.(js|jsx)$/,
