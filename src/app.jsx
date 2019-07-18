@@ -1,23 +1,34 @@
-import React from 'react';
+import * as React from 'react'
+import {observer} from 'mobx-react'
+import {observable} from 'mobx'
 
-const {Provider, Consumer} = React.createContext('hehe');
-
-function App() {
-  return  <Button />
-  {/* </Provider>; */}
+// @observer
+class Child extends React.Component {
+  render() {
+    console.log(1)
+    const {list} = this.props
+    return <ul>
+      {list.map((item, index) => <p key={index}>{item}</p>)}
+    </ul>
+  }
 }
 
-function Button() {
-  return <Text />
+@observer
+class Container extends React.Component {
+  @observable list = []
+
+  handleClick = () => {
+    this.list.push(1)
+  }
+
+  render() {
+    const {list} = this
+    return <section>
+      <button onClick={this.handleClick}>click me to update</button>
+      {/* {list.map((item, index) => <p key={index}>{item}</p>)} */}
+      <Child list={list} />
+    </section>
+  }
 }
 
-function Text(props, context) {
-  console.log(props, context)
-  return <Consumer>
-    {val => (
-      <div>{val}</div>
-    )}
-  </Consumer>
-}
-
-export default App;
+export default Container

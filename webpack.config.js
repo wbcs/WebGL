@@ -8,10 +8,8 @@ const config = {
     filename: 'js/[name].[hash].js',
   },
   module: {
-    rules: [{
-        test: /\.(ts|tsx)$/,
-        use: ['ts-loader'],
-      }, {
+    rules: [
+      {
         test: /\.(js|jsx)$/,
         use: ['babel-loader']
       },
